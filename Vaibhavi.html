@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gift?</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        /* background: linear-gradient(to bottom right, #ffe6f0, #fff0f5); */
+        background: #ffe6f0;
+        font-family: "Dancing Script", cursive;
+        overflow: hidden;
+      }
+
+      #heart-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 28px;
+        padding: 14px 28px;
+        cursor: pointer;
+        background: #ffb6c1;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      #heart-button:hover {
+        background: #ff6fa5;
+      }
+
+      .heart {
+        position: fixed;
+        font-size: 40px;
+        color: transparent;
+        -webkit-text-stroke: 2px red;
+        animation: popUp 2.5s ease-out forwards;
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      @keyframes popUp {
+        0% {
+          opacity: 0;
+          transform: scale(0.5) rotate(0deg);
+        }
+        30% {
+          opacity: 1;
+          transform: scale(1.2) rotate(10deg);
+        }
+        80% {
+          opacity: 1;
+          transform: scale(1.4) rotate(-10deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.6) rotate(0deg);
+        }
+      }
+
+      .message-container {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 9999;
+      }
+
+      .message-box {
+        background: linear-gradient(145deg, #ffe0f0, #ffe9fc, #fff2f7);
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(255, 105, 180, 0.25),
+          0 0 15px rgba(255, 192, 203, 0.3);
+        max-width: 500px;
+        font-size: 30px;
+        color: #b30059;
+        animation: fadeIn 0.8s ease-in-out;
+        transition: background 0.3s ease, color 0.3s ease;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6);
+        border: 2px solid rgba(255, 182, 193, 0.4);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes beat {
+        0% {
+          transform: scale(1);
+        }
+        30% {
+          transform: scale(1.1);
+        }
+        60% {
+          transform: scale(0.95);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .message-box.beat {
+        animation: beat 0.5s ease-in-out;
+      }
+
+      .again-btn {
+        margin-top: 20px;
+        font-size: 20px;
+        padding: 10px 24px;
+        background: #ff6fa5;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        font-family: "Dancing Script", cursive;
+      }
+
+      .again-btn:hover {
+        background: #ff4c91;
+      }
+
+      .petal {
+        position: fixed;
+        font-size: 24px;
+        pointer-events: none;
+        animation: floatPetal 6s linear infinite;
+        color: pink;
+        z-index: 1;
+      }
+
+      @keyframes floatPetal {
+        0% {
+          transform: translateY(-10%) rotate(0deg);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(110vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="heart-button">💗 Click Me</button>
+
+    <audio id="bg-music" loop>
+      <source src="audio.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div id="message-container" class="message-container" style="display: none">
+      <div class="message-box" id="message-box"></div>
+      <button class="again-btn" onclick="resetScene()">Again</button>
+    </div>
+
+    <script>
+      const messages = [
+        "Wish we were cuddled together with meow, miau and bhau right now",
+        "Favourite poet ",
+        "You're my favorite person ever ",
+        "I hate every moment when it's not with you",
+        "You really are my jaan",
+        "I love you the most in this world, princess",
+        "Perfect Princess",
+        "Baby and Princess forever",
+        "I really want to marry you one day",
+      ];
+
+      const button = document.getElementById("heart-button");
+      const container = document.getElementById("message-container");
+      const messageBox = document.getElementById("message-box");
+      const music = document.getElementById("bg-music");
+      let musicStarted = false;
+      let firstRun = true;
+
+      button.addEventListener("click", () => {
+        button.remove();
+
+        if (!musicStarted) {
+          music.play().catch(() => {
+            console.log("Audio blocked, user interaction required.");
+          });
+          musicStarted = true;
+        }
+
+        runScene();
+      });
+
+      function runScene() {
+        container.style.display = "block";
+        showMessage();
+
+        if (firstRun) {
+          for (let i = 0; i < 90; i++) {
+            createHeart();
+          }
+
+          setTimeout(() => {
+            for (let i = 0; i < 30; i++) {
+              const petal = document.createElement("div");
+              petal.className = "petal";
+              petal.innerText = "💗";
+              petal.style.left = Math.random() * 100 + "vw";
+              petal.style.fontSize = `${20 + Math.random() * 30}px`;
+              petal.style.animationDuration = `${5 + Math.random() * 5}s`;
+              document.body.appendChild(petal);
+            }
+          }, 2500);
+
+          firstRun = false;
+        }
+      }
+
+      function showMessage() {
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+        messageBox.innerText = randomMsg;
+
+        messageBox.classList.add("beat");
+        messageBox.addEventListener("animationend", function handler() {
+          messageBox.classList.remove("beat");
+          messageBox.removeEventListener("animationend", handler);
+        });
+      }
+
+      function resetScene() {
+        showMessage();
+      }
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerText = "❤";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = Math.random() * window.innerHeight + "px";
+        const scale = 0.8 + Math.random() * 2.5;
+        heart.style.fontSize = `${20 * scale}px`;
+        heart.style.transform = scale`(${scale})`;
+        document.body.appendChild(heart);
+        setTimeout(() => {
+          heart.remove();
+        }, 2500);
+      }
+     
+    </script>
+  </body>
+</html>
